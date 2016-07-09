@@ -33,9 +33,10 @@ public class RingView extends View {
     private RectF mCircleRect;
     private RectF mOutCircleRect;
 
-    private int mBgColor = 0xfff9b194;
+    private int mBgColor = 0xfff98d90;
     private int mProgressColor = 0xfff98d90;
     private int mLineColor = 0xffc7c6cc;
+    private int mMaskColor = 0x40eeeeee;
     protected int mTextColor = 0xffffffff;
 
     private int mFontSize;
@@ -67,7 +68,6 @@ public class RingView extends View {
         mCircleWidth = AppUtils.dp2px(context, 6);
         mFontSize = AppUtils.sp2px(context, 16);
         mLineHeaight = AppUtils.dp2px(context, 20);
-
     }
 
     @Override
@@ -86,22 +86,24 @@ public class RingView extends View {
         mPaint.setColor(mBgColor);
         float arc = -360 * mProgress / 100;
         canvas.drawArc(mRingRect, -90, arc, false, mPaint);
-        if (mProgress <= 100 || mProgress > 200) {
+        if (mProgress > 200) {
             mSecProgress = 0;
         }
-        else {
-            mSecProgress = mProgress - 100;
+        else if(mSecProgress <200 && mSecProgress>100){
+            mSecProgress = 100 - mSecProgress;
         }
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mRingWidth);
         mPaint.setColor(mProgressColor);
         arc = -360 * mSecProgress / 100;
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setStrokeWidth(0);
+        mPaint.setColor(mMaskColor);
+        if (mProgress <100) {
+            canvas.drawArc(mOutCircleRect, -90, 360, true, mPaint);
+        }
         if (mSecProgress > 0) {
-            canvas.drawArc(mRingRect, -90, arc, false, mPaint);
-            mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setStrokeWidth(0);
-            mPaint.setColor(mProgressColor);
-            canvas.drawArc(mCircleRect, -90, arc, true, mPaint);
+            canvas.drawArc(mOutCircleRect, -90, arc, true, mPaint);
         }
         drawText(canvas);
 
@@ -159,6 +161,9 @@ public class RingView extends View {
 
     public synchronized void setProgress(float progress) {
         this.mProgress = progress;
+        if (mProgress > 100 && mProgress < 200) {
+            mSecProgress = mProgress - 100;
+        }
         invalidate();
     }
 }
