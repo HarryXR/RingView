@@ -89,7 +89,7 @@ public class RingView extends View {
         if (mProgress > 200) {
             mSecProgress = 0;
         }
-        else if(mSecProgress <200 && mSecProgress>100){
+        else if (mProgress < 200 && mProgress > 100) {
             mSecProgress = 100 - mSecProgress;
         }
         mPaint.setStyle(Paint.Style.STROKE);
@@ -99,7 +99,7 @@ public class RingView extends View {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(0);
         mPaint.setColor(mMaskColor);
-        if (mProgress <100) {
+        if (mProgress < 100) {
             canvas.drawArc(mOutCircleRect, -90, 360, true, mPaint);
         }
         if (mSecProgress > 0) {
